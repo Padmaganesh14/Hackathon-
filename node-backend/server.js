@@ -16,7 +16,8 @@ const app = express();
   http://localhost:4028
 
   Production:
-  Your Vercel URL from Render environment variable CORS_ORIGIN
+  Add your Vercel URL in Render environment variables:
+  CORS_ORIGIN=https://your-project.vercel.app
 */
 const allowedOrigins = [
   "http://localhost:4028",
@@ -26,31 +27,37 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests without Origin header:
-      // Postman, curl, Render health check, server-to-server requests
+      // Allows Postman, curl, Render health checks, etc.
       if (!origin) {
         return callback(null, true);
       }
 
-      // Allow local frontend and deployed Vercel frontend
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
       console.log("CORS blocked:", origin);
-
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
+
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// Allows JSON request body up to 10 MB
 app.use(express.json({ limit: "10mb" }));
 
-// Health endpoint for Render deployment test
+// Root route — opens when you visit your Render backend URL
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    message: "PortAID API is running successfully",
+    healthCheck: "/health",
+  });
+});
+
+// Health route — use this in Render health check path
 app.get("/health", (_req, res) => {
   res.status(200).json({
     ok: true,
@@ -65,36 +72,39 @@ app.use("/api/users", userRoutes);
 // Route not found handler
 app.use((req, res) => {
   res.status(404).json({
+    ok: false,
     message: `Route not found: ${req.method} ${req.originalUrl}`,
   });
 });
 
-// Error handler
+// Global error handler
 app.use((err, _req, res, _next) => {
   console.error("Server error:", err.message);
 
-  res.status(500).json({
+  res.status(err.status || 500).json({
+    ok: false,
     message: err.message || "Internal server error",
   });
 });
 
-// Start server and connect MongoDB
+// Connect MongoDB and start server
 const startServer = async () => {
   try {
     if (!process.env.MONGO_URI) {
-      throw new Error("MONGO_URI is missing in .env or Render environment variables");
+      throw new Error(
+        "MONGO_URI is missing. Add it in .env locally or Render environment variables."
+      );
     }
 
     await mongoose.connect(process.env.MONGO_URI);
 
     console.log("MongoDB connected successfully");
 
-    // Render automatically provides PORT
     const port = process.env.PORT || 5000;
 
     app.listen(port, "0.0.0.0", () => {
       console.log(`Server running on port ${port}`);
-      console.log(`Health check: http://localhost:${port}/health`);
+      console.log(`Local health check: http://localhost:${port}/health`);
     });
   } catch (error) {
     console.error("Server startup failed:", error.message);
