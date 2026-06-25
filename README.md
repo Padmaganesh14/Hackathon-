@@ -1,16 +1,33 @@
 # PortAID — Portable Digital Identity Wallet
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20PortAID-orange?style=for-the-badge)](https://hackathon-62eh.vercel.app/)
+[![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge)](https://hackathon-62eh.vercel.app/)
+[![Backend](https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge)](https://hackathon-0oig.onrender.com/)
+
 PortAID is a full-stack digital identity wallet that allows users to upload, manage, verify, and share identity details through a secure KYC-style workflow.
 
 Users can upload an identity document, extract text using OCR, review and edit the extracted details, complete a camera-based face detection step, confirm their identity information, and view a calculated trust score in the wallet dashboard.
 
+> **Live Demo:** https://hackathon-62eh.vercel.app/
+
 > **Disclaimer:** PortAID is an educational and portfolio project. It is not a production KYC system and must not be used for official government identity verification.
+
+---
+
+## Live Deployment
+
+| Service | URL |
+|---|---|
+| Frontend | https://hackathon-62eh.vercel.app/ |
+| Backend API | https://hackathon-0oig.onrender.com/ |
+| Backend Health Check | https://hackathon-0oig.onrender.com/health |
 
 ---
 
 ## Features
 
 - User authentication with MongoDB
+- Secure JWT-based login flow
 - Identity Wallet dashboard
 - Government ID document upload
 - Aadhaar Card, PAN Card, Passport, and Driving License options
@@ -27,6 +44,7 @@ Users can upload an identity document, extract text using OCR, review and edit t
 - Consent-management interface
 - Recent activity interface
 - Responsive dark UI
+- Deployed frontend and backend integration
 
 ---
 
@@ -57,6 +75,7 @@ MediaPipe Tasks Vision
 Lucide React
 Heroicons
 Recharts
+Vercel Deployment
 Backend
 Node.js
 Express.js
@@ -66,6 +85,7 @@ JWT Authentication
 bcryptjs
 dotenv
 CORS
+Render Deployment
 Project Structure
 portaid-main/
 │
@@ -107,10 +127,15 @@ npm install
 npm install tesseract.js
 npm install @mediapipe/tasks-vision
 npm install pdfjs-dist
-4. Run the Frontend
+4. Create Frontend Environment File
+
+Create a .env.local file in the root folder:
+
+NEXT_PUBLIC_API_URL=http://localhost:5000
+5. Run the Frontend
 npm run dev
 
-The frontend runs at:
+Frontend runs at:
 
 http://localhost:4028
 Backend Setup
@@ -129,14 +154,30 @@ MONGO_URI=your_mongodb_atlas_connection_string
 PORT=5000
 CORS_ORIGIN=http://localhost:4028
 JWT_SECRET=your_long_random_jwt_secret
+ENCRYPTION_KEY=your_32_character_encryption_key
 
 Run the backend:
 
 node server.js
 
-The backend runs at:
+Backend runs at:
 
 http://localhost:5000
+
+Health check:
+
+http://localhost:5000/health
+Deployment Environment Variables
+Vercel Frontend
+NEXT_PUBLIC_API_URL=https://hackathon-0oig.onrender.com
+Render Backend
+MONGO_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_long_random_jwt_secret
+ENCRYPTION_KEY=your_32_character_encryption_key
+CORS_ORIGIN=https://hackathon-62eh.vercel.app
+
+Do not add a trailing / to CORS_ORIGIN.
+
 OCR Document Scanning
 
 PortAID uses Tesseract.js for OCR scanning.
@@ -153,22 +194,21 @@ Address
 
 OCR results may not always be accurate because document image quality, lighting, blur, font size, and document layout affect recognition.
 
-For this reason, users can manually review and correct all extracted fields before continuing.
+Users can manually review and correct extracted fields before continuing.
 
 PDF Upload
 
 PDF files can be uploaded in the verification workflow.
 
-Current PDF behavior:
-
-PDF upload supported
+Current PDF Behavior
+PDF upload is supported
 PDF OCR requires converting PDF pages into images before Tesseract scanning
+Full PDF OCR conversion can be added as a future enhancement
 Face Verification
 
 PortAID uses the browser camera and MediaPipe Face Landmarker.
 
-Current demo checks:
-
+Current Demo Checks
 Browser camera permission
 Live camera preview
 Face visibility
@@ -180,7 +220,7 @@ The current face-verification feature confirms that a face is visible in the liv
 It does not currently provide:
 
 Government-grade KYC verification
-Aadhaar/PAN validation
+Aadhaar or PAN validation
 ID-photo-to-live-face matching
 Advanced anti-spoofing detection
 Legal biometric verification
@@ -211,13 +251,13 @@ Encrypt sensitive identity data before saving it to the database.
 Mask document numbers in the UI.
 Delete temporary uploaded files after OCR processing.
 Use HTTPS for all frontend and backend communication.
-Store database URLs and JWT secrets only in environment variables.
+Store database URLs, JWT secrets, and encryption keys only in environment variables.
 Use secure authentication and authorization.
 Use regulated KYC providers for real identity verification.
 Do not treat OCR or basic face detection as legal identity verification.
 Future Improvements
 PDF-to-image conversion for PDF OCR
-Better Aadhaar/PAN/Passport field extraction
+Better Aadhaar, PAN, Passport, and Driving License field extraction
 Multi-language OCR support
 Tamil and Hindi document OCR support
 Blink detection for liveness verification
@@ -230,7 +270,6 @@ QR-based identity sharing
 MongoDB activity logs
 Admin dashboard
 Email verification
-Deployment using Vercel and Render
 IPFS-based consent-controlled identity sharing
 Screens and Modules
 Identity Wallet Dashboard
@@ -248,20 +287,13 @@ Edit extracted details
 Face detection
 Review and confirm
 Wallet dashboard update
-Environment Variables
-Frontend
-NEXT_PUBLIC_API_URL=http://localhost:5000
-Backend
-MONGO_URI=your_mongodb_atlas_connection_string
-PORT=5000
-CORS_ORIGIN=http://localhost:4028
-JWT_SECRET=your_long_random_jwt_secret
 Author
 
-Developed by Padma Ganesh P
+Padma Ganesh P
 
 GitHub: https://github.com/Padmaganesh14
 Project: PortAID — Portable Digital Identity Wallet
+Live Demo: https://hackathon-62eh.vercel.app/
 License
 
 This project is created for educational, hackathon, and portfolio purposes.
